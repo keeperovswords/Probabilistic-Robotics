@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-08-07T09:31:50+02:00</updated><id>http://localhost:4000/</id><title type="html">Probabilistic Robotics</title><subtitle>The introduction of all basic algorithms in reinforcement learning. Keyword: Robotics, Optimal Control, Function Approximation
-</subtitle><author><name>Jian Xi</name></author><entry><title type="html">Recursive steate estimation</title><link href="http://localhost:4000/main/2017/07/13/recursive-steate-estimation.html" rel="alternate" type="text/html" title="Recursive steate estimation" /><published>2017-07-13T20:50:51+02:00</published><updated>2017-07-13T20:50:51+02:00</updated><id>http://localhost:4000/main/2017/07/13/recursive-%20steate-estimation</id><content type="html" xml:base="http://localhost:4000/main/2017/07/13/recursive-steate-estimation.html">&lt;p&gt;The most essential problem in probabilistic robotics is to estimate the current state of robots from sensor data, which is always noisy or not directly observable. 
-State Estimation draws this problem and seeks to recover state variable from sensor data, so that the state belief can be quantified by computing the belief distribution  over possible world states. Let’s begin with basic probability at first.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-08-07T10:27:08+02:00</updated><id>http://localhost:4000/</id><title type="html">Probabilistic Robotics</title><subtitle>The introduction of all basic algorithms in reinforcement learning. Keyword: Robotics, Optimal Control, Function Approximation
+</subtitle><author><name>Jian Xi</name></author><entry><title type="html">Recursive steate estimation</title><link href="http://localhost:4000/main/2017/07/13/recursive-steate-estimation.html" rel="alternate" type="text/html" title="Recursive steate estimation" /><published>2017-07-13T20:50:51+02:00</published><updated>2017-07-13T20:50:51+02:00</updated><id>http://localhost:4000/main/2017/07/13/recursive-%20steate-estimation</id><content type="html" xml:base="http://localhost:4000/main/2017/07/13/recursive-steate-estimation.html">The most essential problem in probabilistic robotics is to estimate the current state of robots from sensor data, which is always noisy or not directly observable. 
+State Estimation draws this problem and seeks to recover state variable from sensor data, so that the state belief can be quantified by computing the belief distribution  over possible world states. Let's begin with basic probability at first.
 
 &lt;h1&gt;Robot Environment Interaction&lt;/h1&gt;
-&lt;p&gt;An environment or a world of robot is a dynamic system that possesses internal state. The robot percepts this world by its perception devices like sensor. However the sensor is noisy or the environment is not fully observable, so the robot maintains a internal belief state with regards to the state of its environment. 
-An environment interaction is depicted as follows (Quote from &lt;a href=&quot;http://www.probabilistic-robotics.org/&quot;&gt;Probabilistic Robotics&lt;/a&gt;):&lt;/p&gt;
+An environment or a world of robot is a dynamic system that possesses internal state. The robot percepts this world by its perception devices like sensor. However the sensor is noisy or the environment is not fully observable, so the robot maintains a internal belief state with regards to the state of its environment. 
+An environment interaction is depicted as follows (Quote from [Probabilistic Robotics][book-link]):
 &lt;div class=&quot;fig figcenter fighighlight&quot;&gt;
-  &lt;img src=&quot;/assets/environment-interaction.png&quot; width=&quot;75%&quot; /&gt;
+  &lt;img src=&quot;{{ site.github.url }}/assets/environment-interaction.png&quot; width=&quot;75%&quot;&gt;
   &lt;div class=&quot;figcaption&quot;&gt;A typical interaction environment in live world. &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2&gt;State&lt;/h2&gt;
-&lt;p&gt;Environments can be abstracted as &lt;b&gt;State&lt;/b&gt;. The state is call &lt;b&gt;dynamic&lt;/b&gt; when it  changes over time, say, the fuel lifetime of a robot. Static state means it’s changeless over time, e.g. the location of wall in a building. 
-Also the state can be inferred to the robot itself, such as its pose, velocity and etc. State is often denoted as &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt;, the state at time step &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; is denoted as &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt;. Typical state variables comprised from the following categories:&lt;/p&gt;
+Environments can be abstracted as &lt;b&gt;State&lt;/b&gt;. The state is call &lt;b&gt;dynamic&lt;/b&gt; when it  changes over time, say, the fuel lifetime of a robot. Static state means it's changeless over time, e.g. the location of wall in a building. 
+Also the state can be inferred to the robot itself, such as its pose, velocity and etc. State is often denoted as $$x$$, the state at time step $$t$$ is denoted as $$x_t$$. Typical state variables comprised from the following categories:
 &lt;ul&gt;
 &lt;li&gt;The robot pose: it's the location and orientation relative to the global coordinate frame. Rigid mobile robots possess six such state variables, three for their Cartesian coordinates, and three for their angular orientation, also called Euler angles (pitch, roll, and yaw). The post state is ofter refereed to &lt;b&gt;kinematic state&lt;/b&gt;.&lt;/li&gt;
 &lt;li&gt;The configuration of Robot's Actuators: , such as the joints of robotic manipulators. Each degree of freedom in a robot arm is characterized by a one-dimensional configuration at any point in time, which is part of the kinematic state of the robot.&lt;/li&gt;
@@ -19,44 +19,43 @@ Also the state can be inferred to the robot itself, such as its pose, velocity a
 &lt;li&gt;The location and features of surrounding objects in the environment. How an object will be represented depending on the granularity of the state that is being modeled, robot environments possess between a few dozen and up to hundreds of billions of state variables. Sometime we use landmarks that are stationary and easily recognize reliably.&lt;/li&gt;&lt;li&gt;The location and velocities of moving objects and people. Those objects have also the kinematic state.&lt;/li&gt;
 &lt;li&gt;There can be a huge number of other state variables. For example, whether or not a sensor is broken is a state variable, as is the level of battery charge for a battery-powered robot.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;A state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is called &lt;b&gt;complete&lt;/b&gt; if it’s the best predictor to the future. &lt;b&gt;Completeness&lt;/b&gt; includes knowledges of states, measurements, or controls carry on no additional information that would help us to predict the future more accurately. 
-Completeness does not imply that the future is a deterministic function of state. Completeness provides a good view theoretically and analytically. In practice it’s impossible to specify the robot to a complete state, which limited by different factors
+A state $$x_t$$ is called &lt;b&gt;complete&lt;/b&gt; if it's the best predictor to the future. &lt;b&gt;Completeness&lt;/b&gt; includes knowledges of states, measurements, or controls carry on no additional information that would help us to predict the future more accurately. 
+Completeness does not imply that the future is a deterministic function of state. Completeness provides a good view theoretically and analytically. In practice it's impossible to specify the robot to a complete state, which limited by different factors
 such as robot memory, or changing dynamic of environment and etc. Such a state is &lt;b&gt;incomplete&lt;/b&gt; state. State spaces varies also different. &lt;b&gt;Continuous&lt;/b&gt; state space like the robot pose, and &lt;b&gt;discrete&lt;/b&gt; state space like battery is empty or not. 
-Some is a mixture of both, called &lt;b&gt;hybrid&lt;/b&gt; state space.&lt;/p&gt;
+Some is a mixture of both, called &lt;b&gt;hybrid&lt;/b&gt; state space.
 
 &lt;h2&gt;Interaction&lt;/h2&gt;
-&lt;p&gt;As the carton above shows, an interaction between robot and its environment consists of two aspects:&lt;/p&gt;
+As the carton above shows, an interaction between robot and its environment consists of two aspects:
 &lt;ul&gt;
 &lt;li&gt;&lt;b&gt;Sensor measurement:&lt;/b&gt; Perceptions enables the robots to percepts and gather information from the environment to determine its state in environment, e.g. using camera taking photos or scan range and etc. 
 This perceptual information is called &lt;b&gt;measurement&lt;/b&gt; or sometimes denoted as &lt;b&gt;observation&lt;/b&gt;. Often the measurement arrives with some delay.&lt;/li&gt;
 &lt;li&gt;&lt;b&gt;Control actions:&lt;/b&gt; by which the world changes. The robot may execute a action or moves a little bit. Even the robot stays unmoved, the state changes unstop. 
 In practice, the robot continuously executes controls and measurements are made concurrently.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;All the collection of measurement and controls is denoted as &lt;b&gt;data&lt;/b&gt;.  The robot has normally two types of data in accordance with the interactions.&lt;br /&gt;
-&lt;b&gt;Measurement data:&lt;/b&gt; provides the momentary information about the state of environment. The measurement data at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; is denoted as &lt;script type=&quot;math/tex&quot;&gt;z_t.&lt;/script&gt; Usually the robot can acquire variables numbers of measurement within a single time step.
-The measurements between time step &lt;script type=&quot;math/tex&quot;&gt;t_1&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;t_2&lt;/script&gt; are denoted as 
+All the collection of measurement and controls is denoted as &lt;b&gt;data&lt;/b&gt;.  The robot has normally two types of data in accordance with the interactions.&lt;br /&gt;
+&lt;b&gt;Measurement data:&lt;/b&gt; provides the momentary information about the state of environment. The measurement data at time $$t$$ is denoted as $$z_t.$$ Usually the robot can acquire variables numbers of measurement within a single time step.
+The measurements between time step $$t_1$$ and $$t_2$$ are denoted as 
 	\begin{equation}
 	z_{t_1:t_2} = z_{t_1},z_{t_1 + 1}, z_{t_1 + 2}, \dots, z_{t_2} 
-	\end{equation} &lt;br /&gt;&lt;/p&gt;
+	\end{equation} &lt;br /&gt;
+	
+&lt;b&gt;Control data:&lt;/b&gt; presents the information about the change of state in environment. e.g. the motion of robot in environment. An alternative source of control data are  &lt;b&gt;obometers&lt;/b&gt;, which measures the revolution of robot's wheels.  Control data is denoted as $$u_t$$ at time step $$t$$. The control variable $$u_t$$ corresponds to the change of state in time interval $$[ t-1,t ]$$. A sequence of control data for $$t_1 &lt; t_2$$ is denoted as:
 
-&lt;p&gt;&lt;b&gt;Control data:&lt;/b&gt; presents the information about the change of state in environment. e.g. the motion of robot in environment. An alternative source of control data are  &lt;b&gt;obometers&lt;/b&gt;, which measures the revolution of robot’s wheels.  Control data is denoted as &lt;script type=&quot;math/tex&quot;&gt;u_t&lt;/script&gt; at time step &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. The control variable &lt;script type=&quot;math/tex&quot;&gt;u_t&lt;/script&gt; corresponds to the change of state in time interval &lt;script type=&quot;math/tex&quot;&gt;[ t-1,t ]&lt;/script&gt;. A sequence of control data for &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-t_1 &lt; t_2 %]]&gt;&lt;/script&gt; is denoted as:&lt;/p&gt;
-
-&lt;p&gt;\begin{equation}
+\begin{equation}
 	u_{t_1:t_2} = u_{t_1}, u_{t_1 +1}, u_{t_1 + 2}, \dots, u_{t_2} 
 	\end{equation} &lt;br /&gt;
-As we saied before, even the robot does not execute actions, the state changes. Hence, we assume that there is exactly one control data item per time step &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;.&lt;/p&gt;
+As we saied before, even the robot does not execute actions, the state changes. Hence, we assume that there is exactly one control data item per time step $$t$$.
 
 &lt;h2&gt;Probabilistic Generative Laws&lt;/h2&gt;
-&lt;p&gt;The evolution of states and measurements is governed by the &lt;b&gt;probabilistic laws&lt;/b&gt;. The state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is generated stochastically. So it’s necessary to specify the probabilistic distribution from which
-the state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is generated. Normally the current state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is conditional on all past states, measurements and control, as denoted as follows:
+The evolution of states and measurements is governed by the &lt;b&gt;probabilistic laws&lt;/b&gt;. The state $$x_t$$ is generated stochastically. So it's necessary to specify the probabilistic distribution from which
+the state $$x_t$$ is generated. Normally the current state $$x_t$$ is conditional on all past states, measurements and control, as denoted as follows:
 \begin{equation}
 p(x_t|x_{0:t-1}, z_{1:t-1}, u_{1:t})
 \tag{1} 
-\end{equation}&lt;/p&gt;
+\end{equation}
 
-&lt;p&gt;If the state is &lt;b&gt;complete&lt;/b&gt;, it carries sufficient information about all what pasts in previous time steps. In particular, &lt;script type=&quot;math/tex&quot;&gt;x_{t-1}&lt;/script&gt; is a sufficient information about all previous states &lt;script type=&quot;math/tex&quot;&gt;u_{1:t_1}&lt;/script&gt; 
-and measurements &lt;script type=&quot;math/tex&quot;&gt;z_{1:t-1}&lt;/script&gt; upto this point. So what matters is &lt;script type=&quot;math/tex&quot;&gt;u_t&lt;/script&gt; if we know the state &lt;script type=&quot;math/tex&quot;&gt;x_{t-1}&lt;/script&gt;. Hence the Eq. (1) can be reformed as:
+If the state is &lt;b&gt;complete&lt;/b&gt;, it carries sufficient information about all what pasts in previous time steps. In particular, $$x_{t-1}$$ is a sufficient information about all previous states $$u_{1:t_1}$$ 
+and measurements $$z_{1:t-1}$$ upto this point. So what matters is $$u_t$$ if we know the state $$x_{t-1}$$. Hence the Eq. (1) can be reformed as:
 \begin{equation}\label{eq:problaws2}
 	p(x_t|x_{0:t-1}, z_{1:t-1}, u_{1:t}) = p(x_t|x_{t-1}, u_t)
 	\tag{2} 
@@ -66,52 +65,59 @@ The Eq. (2) possess the &lt;b&gt;conditional independence&lt;/b&gt;. Similar, th
 p(z_t|x_{0:t},z_{1:t-1}, u_{1:t}) = p(z_t|x_t)
 \tag{3} 
 \end{equation}
-This Eq. (3) shows that the current state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is sufficient to predict the measurement &lt;script type=&quot;math/tex&quot;&gt;z_t&lt;/script&gt;.&lt;/p&gt;
+This Eq. (3) shows that the current state $$x_t$$ is sufficient to predict the measurement $$z_t$$.
 
-&lt;p&gt;The Eq. (2) specifies how the environmental state changes over time  as a function of control &lt;script type=&quot;math/tex&quot;&gt;u_t&lt;/script&gt;, is called &lt;b&gt;State Transition Probability&lt;/b&gt;.
-The stochastic dynamics of environment is clearly expressed by this quantity. Sometime the this transition distribution does not depend on the time index &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, so this quantity may be denoted as 
+The Eq. (2) specifies how the environmental state changes over time  as a function of control $$u_t$$, is called &lt;b&gt;State Transition Probability&lt;/b&gt;.
+The stochastic dynamics of environment is clearly expressed by this quantity. Sometime the this transition distribution does not depend on the time index $$t$$, so this quantity may be denoted as 
 \begin{equation}
 p(x^\prime|x, u),
 \end{equation}
-where &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; the predecessor state and &lt;script type=&quot;math/tex&quot;&gt;x^\prime&lt;/script&gt; successor state.&lt;/p&gt;
+where $$x$$ the predecessor state and $$x^\prime$$ successor state.
 
-&lt;p&gt;The quantity (3) shows the probability with which the measurement is made, is called &lt;b&gt;Measurement Prabability&lt;/b&gt;. If it does not involve time index, this can be reformed as 
+The quantity (3) shows the probability with which the measurement is made, is called &lt;b&gt;Measurement Prabability&lt;/b&gt;. If it does not involve time index, this can be reformed as 
 \begin{equation}
 p(z|x).
-\end{equation}&lt;/p&gt;
+\end{equation}
+
+
 
 &lt;h2&gt;Belief Distributions&lt;/h2&gt;
-&lt;p&gt;A &lt;b&gt;belief&lt;/b&gt; reflects the internal knowledge of robots about the state of the environment. The state can not be measured directly. Hence, we need to infer it from data. 
-Therefore we distinguish the true state from its internal belief state or state of knowledge with regard to the state.&lt;/p&gt;
+A &lt;b&gt;belief&lt;/b&gt; reflects the internal knowledge of robots about the state of the environment. The state can not be measured directly. Hence, we need to infer it from data. 
+Therefore we distinguish the true state from its internal belief state or state of knowledge with regard to the state.
 
-&lt;p&gt;Belief distribution are posterior probability over state variables conditioned on the available data. The posterior belief distribution over state $x_t$ is given by:
+Belief distribution are posterior probability over state variables conditioned on the available data. The posterior belief distribution over state $x_t$ is given by:
 \begin{equation}
 bel{(x_t)} = p(x_t|z_{1:t}, u_{1:t})
 \end{equation}
-Literally it says the state of knowledge of &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is conditional on all the previous measurements and controls. If we calculate the posterior &lt;b&gt;before&lt;/b&gt; incorporating &lt;script type=&quot;math/tex&quot;&gt;z_t&lt;/script&gt;, such a posterior will be denoted as follows:
+Literally it says the state of knowledge of $$x_t$$ is conditional on all the previous measurements and controls. If we calculate the posterior &lt;b&gt;before&lt;/b&gt; incorporating $$z_t$$, such a posterior will be denoted as follows:
 \begin{equation}\label{eq:beliefprediction}
 \tilde{bel}{(x_t)} =  p(x_t|z_{1:t-1}, u_{1:t})
 \tag{4} 
 \end{equation}
-This is a &lt;b&gt;prediction&lt;/b&gt; of current state belief in probabilistic filtering based on the previous state posterior, before incorporating at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. Computing &lt;script type=&quot;math/tex&quot;&gt;bel(x_t)&lt;/script&gt; from &lt;script type=&quot;math/tex&quot;&gt;\tilde{bel(x_t)}&lt;/script&gt; is called &lt;b&gt;correction&lt;/b&gt; or &lt;b&gt;measurement update&lt;/b&gt;.&lt;/p&gt;
+This is a &lt;b&gt;prediction&lt;/b&gt; of current state belief in probabilistic filtering based on the previous state posterior, before incorporating at time $$t$$. Computing $$bel(x_t)$$ from $$\tilde{bel(x_t)}$$ is called &lt;b&gt;correction&lt;/b&gt; or &lt;b&gt;measurement update&lt;/b&gt;.
+
 
 &lt;h1&gt;Bayes Filter&lt;/h1&gt;
-&lt;p&gt;Usually the state is not directly observable,  in practice the belief is calculated by Bayes Filter from measurement and control data. The pseudo-code of this algorithm is depicted as follows:&lt;/p&gt;
+Usually the state is not directly observable,  in practice the belief is calculated by Bayes Filter from measurement and control data. The pseudo-code of this algorithm is depicted as follows:
 &lt;div class=&quot;fig figcenter fighighlight&quot;&gt;
-  &lt;img src=&quot;/assets/bayes-filter.png&quot; width=&quot;100%&quot; /&gt;
+  &lt;img src=&quot;{{ site.github.url }}/assets/bayes-filter.png&quot; width=&quot;100%&quot;&gt;
 &lt;/div&gt;
 
-&lt;p&gt;This algorithm is a recursive approach and it consists of two essential steps: In line 2, it involves the computing the belief state over state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; based on the prior belief over state &lt;script type=&quot;math/tex&quot;&gt;x_{t-1}&lt;/script&gt;
-and the control at time step &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. This prediction over state &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt; is obtained by the integral (sum) of prior belief to &lt;script type=&quot;math/tex&quot;&gt;x_{t-1}&lt;/script&gt; and the probability &lt;script type=&quot;math/tex&quot;&gt;u_t&lt;/script&gt; that induces a transition from &lt;script type=&quot;math/tex&quot;&gt;x_{t-1}&lt;/script&gt;
-to &lt;script type=&quot;math/tex&quot;&gt;x_t&lt;/script&gt;, as we named in Eq. (4). The second step is called &lt;b&gt;measurement update&lt;/b&gt; which arises a multiplication of  prediction &lt;script type=&quot;math/tex&quot;&gt;\tilde{del}(x_t)&lt;/script&gt; by the probability by which the measurement might be observed.
-As it states here, the result should be normalized, since the multiplication results are not probability, that’s what &lt;script type=&quot;math/tex&quot;&gt;\eta&lt;/script&gt; does in line 3.
-To compute the posterior recursively, the initial belief &lt;script type=&quot;math/tex&quot;&gt;bel(x_0)&lt;/script&gt; at time &lt;script type=&quot;math/tex&quot;&gt;t = 0&lt;/script&gt; is needed. The initial belief should be either uniform distribution or some distribution with certainty.&lt;/p&gt;</content><author><name>Jian Xi</name></author><summary type="html">The most essential problem in probabilistic robotics is to estimate the current state of robots from sensor data, which is always noisy or not directly observable. State Estimation draws this problem and seeks to recover state variable from sensor data, so that the state belief can be quantified by computing the belief distribution over possible world states. Let’s begin with basic probability at first.</summary></entry><entry><title type="html">Why Probabilistic Robotics?</title><link href="http://localhost:4000/main/2017/07/01/why-probabilistic-robotics.html" rel="alternate" type="text/html" title="Why Probabilistic Robotics?" /><published>2017-07-01T09:50:51+02:00</published><updated>2017-07-01T09:50:51+02:00</updated><id>http://localhost:4000/main/2017/07/01/why-probabilistic-robotics</id><content type="html" xml:base="http://localhost:4000/main/2017/07/01/why-probabilistic-robotics.html">&lt;h1&gt;Basic&lt;/h1&gt;
-&lt;p&gt;Robotics involve two main concepts: control and perception permanently. Control means how the robots interactive in the real world such as motion, localization etc. Perception
+This algorithm is a recursive approach and it consists of two essential steps: In line 2, it involves the computing the belief state over state $$x_t$$ based on the prior belief over state $$x_{t-1}$$
+and the control at time step $$t$$. This prediction over state $$x_t$$ is obtained by the integral (sum) of prior belief to $$x_{t-1}$$ and the probability $$u_t$$ that induces a transition from $$x_{t-1} $$
+to $$x_t$$, as we named in Eq. (4). The second step is called &lt;b&gt;measurement update&lt;/b&gt; which arises a multiplication of  prediction $$\tilde{del}(x_t)$$ by the probability by which the measurement might be observed.
+As it states here, the result should be normalized, since the multiplication results are not probability, that's what $$\eta$$ does in line 3.
+To compute the posterior recursively, the initial belief $$bel(x_0)$$ at time $$t = 0$$ is needed. The initial belief should be either uniform distribution or some distribution with certainty.
+
+
+
+[book-link]:http://www.probabilistic-robotics.org/</content><author><name>Jian Xi</name></author><summary type="html">The most essential problem in probabilistic robotics is to estimate the current state of robots from sensor data, which is always noisy or not directly observable. State Estimation draws this problem and seeks to recover state variable from sensor data, so that the state belief can be quantified by computing the belief distribution over possible world states. Let’s begin with basic probability at first.</summary></entry><entry><title type="html">Why Probabilistic Robotics?</title><link href="http://localhost:4000/main/2017/07/01/why-probabilistic-robotics.html" rel="alternate" type="text/html" title="Why Probabilistic Robotics?" /><published>2017-07-01T09:50:51+02:00</published><updated>2017-07-01T09:50:51+02:00</updated><id>http://localhost:4000/main/2017/07/01/why-probabilistic-robotics</id><content type="html" xml:base="http://localhost:4000/main/2017/07/01/why-probabilistic-robotics.html">&lt;h1&gt;Basic&lt;/h1&gt;
+Robotics involve two main concepts: control and perception permanently. Control means how the robots interactive in the real world such as motion, localization etc. Perception
 enables the robots to perceives the information from environment by armed with some devices such as sensor and radar etc. Robotics is kind of science to build a feasible
-solution for our control and perception tasks. As robots act in the working environment, the physical world changes inherently unpredictably. The unpredictable factors are abstracted as &lt;strong&gt;Uncertainty&lt;/strong&gt;.&lt;/p&gt;
+solution for our control and perception tasks. As robots act in the working environment, the physical world changes inherently unpredictably. The unpredictable factors are abstracted as &lt;strong&gt;Uncertainty&lt;/strong&gt;.
 
 &lt;h1&gt;Uncertainty&lt;/h1&gt;
-&lt;p&gt;Basically, the uncertainty can be summaried as the following parts:&lt;/p&gt;
+Basically, the uncertainty can be summaried as the following parts:
 &lt;ul&gt;
 &lt;li&gt;Environment: In our live world there exist always the unpredictability, say, you want to design a autonomous driving car. You can build your simulation experiment carefully, but it's almost impossible to build a real case in highway, cause the dynamics of this scenario changes unpredictably.&lt;/li&gt;
 &lt;li&gt;Sensor: Sensor is the only way that our robots percepts or perceives the information of the environment. Normally the perception is limited by the range and resolution of sensors. Furthermore the sensor measurements delivers also the noisy information by the sensor perturbations.&lt;/li&gt; 
@@ -119,13 +125,13 @@ solution for our control and perception tasks. As robots act in the working envi
 &lt;li&gt;Models: Models or modeling is the only way that we abstract the environment. They describes the underlying processes of the robot and environment partially. So it's also inaccurate.&lt;/li&gt; 
 &lt;li&gt;Computation: Robots are real-time system. So it limits the amount of computation as we need. Most algorithms compute approximately over time runs, which is also a factor of inaccuracy.&lt;/li&gt; 
 &lt;/ul&gt;
-&lt;p&gt;All of these factors contribute to uncertainty or unpredictability. For building a robot we need to handle them appropriately.&lt;/p&gt;
+All of these factors contribute to uncertainty or unpredictability. For building a robot we need to handle them appropriately.
 
 &lt;h1&gt;Probabilistic Robotics&lt;/h1&gt;
-&lt;p&gt;With the probabilistic theory we can abstract and handle the uncertainty smoothly. The uncertain activities can be represented as the probabilistic distribution over the possible hypotheses. 
+With the probabilistic theory we can abstract and handle the uncertainty smoothly. The uncertain activities can be represented as the probabilistic distribution over the possible hypotheses. 
 The ambiguity or degree of belief can be nicely accommodate the factors we mentioned before. The degree of belief implies the momentary estimate of the considered elements, say, the state of current robots in localization problem. 
-Probabilistic approaches for estimation is the &lt;strong&gt;only&lt;/strong&gt; typically approach that’s robust again the sensor limitations, environment dynamics and etc. This approach needs a weak requirements of model accuracy than any other algorithms do. 
-It’s also broadly applicable to problems involving perceptions and actions in real world.&lt;br /&gt;&lt;/p&gt;
+Probabilistic approaches for estimation is the **only** typically approach that's robust again the sensor limitations, environment dynamics and etc. This approach needs a weak requirements of model accuracy than any other algorithms do. 
+It's also broadly applicable to problems involving perceptions and actions in real world.&lt;br /&gt;
 
-&lt;p&gt;As the live world changes, the model of robots and environment changes correspondingly. As robot works the uncertainty lurks anywhere and anytime. With probabilistic model we can abstract the model and handle them in a plausible way to build robot conceptions. The disadvantage of probabilistic approach should be also considered. 
-Say, the probabilistic algorithms take all probabilistic densities into account and it’s less ineffective and needs more computation resources.&lt;/p&gt;</content><author><name>Jian Xi</name></author><summary type="html">Basic Robotics involve two main concepts: control and perception permanently. Control means how the robots interactive in the real world such as motion, localization etc. Perception enables the robots to perceives the information from environment by armed with some devices such as sensor and radar etc. Robotics is kind of science to build a feasible solution for our control and perception tasks. As robots act in the working environment, the physical world changes inherently unpredictably. The unpredictable factors are abstracted as Uncertainty.</summary></entry></feed>
+As the live world changes, the model of robots and environment changes correspondingly. As robot works the uncertainty lurks anywhere and anytime. With probabilistic model we can abstract the model and handle them in a plausible way to build robot conceptions. The disadvantage of probabilistic approach should be also considered. 
+Say, the probabilistic algorithms take all probabilistic densities into account and it's less ineffective and needs more computation resources.</content><author><name>Jian Xi</name></author><summary type="html">Basic Robotics involve two main concepts: control and perception permanently. Control means how the robots interactive in the real world such as motion, localization etc. Perception enables the robots to perceives the information from environment by armed with some devices such as sensor and radar etc. Robotics is kind of science to build a feasible solution for our control and perception tasks. As robots act in the working environment, the physical world changes inherently unpredictably. The unpredictable factors are abstracted as Uncertainty.</summary></entry></feed>
