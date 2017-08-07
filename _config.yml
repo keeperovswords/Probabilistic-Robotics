@@ -1,0 +1,29 @@
+
+
+# Site settings
+title: Probabilistic Robotics
+email: keeperovsword@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  The introduction of all basic algorithms in reinforcement learning.
+  Keyword: Robotics, Optimal Control, Function Approximation
+baseurl: "" 
+url:     "" 
+
+# for solving error: GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
+github: [metadata]
+
+# for solving error: no repo name found
+repository: https://github.com/keeperovswords/Probabilistic-Robotics
+##
+author:
+  name:       Jian Xi
+  url:        https://github.com/keeperovswords
+
+# Build settings
+markdown: kramdown
+theme: minima
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+
