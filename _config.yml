@@ -10,7 +10,7 @@ baseurl: ""
 url:     "" 
 
 # for solving error: GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
-github: [metadata]
+#github: [metadata]
 
 # for solving error: no repo name found
 #repository: https://github.com/keeperovswords/Probabilistic-Robotics
