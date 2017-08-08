@@ -13,7 +13,7 @@ url:     ""
 #github: [metadata]
 
 # for solving error: no repo name found
-repository: keeperovswords.github.io/Probabilistic-Robotics
+#repository: keeperovswords.github.io/Probabilistic-Robotics
 ##
 author:
   name:       Jian Xi
