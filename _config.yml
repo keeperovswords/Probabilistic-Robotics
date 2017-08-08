@@ -9,13 +9,19 @@ description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" 
 url:     "" 
 
+# for solving error: GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
+#github: [metadata]
+
+# for solving error: no repo name found
+repository: keeperovswords.github.io/Probabilistic-Robotics
+##
 author:
   name:       Jian Xi
   url:        https://github.com/keeperovswords
 
 # Build settings
 markdown: kramdown
-theme: jekyll-theme-cayman
+theme: minima
 
 exclude:
   - Gemfile
