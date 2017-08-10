@@ -6,15 +6,9 @@ email: keeperovsword@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   The introduction of all basic algorithms in reinforcement learning.
   Keyword: Robotics, Optimal Control, Function Approximation
-baseurl: "" 
+baseurl: "/Probabilistic-Robotics" 
 url:     "" 
 
-# for solving error: GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
-#github: [metadata]
-
-# for solving error: no repo name found
-#repository: keeperovswords.github.io/Probabilistic-Robotics
-##
 author:
   name:       Jian Xi
   url:        https://github.com/keeperovswords
